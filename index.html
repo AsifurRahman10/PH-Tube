@@ -17,7 +17,7 @@
         </div>
         <div>
             <label class="input input-bordered flex items-center gap-2">
-                <input type="text" class="grow" placeholder="Search" />
+                <input type="text" class="grow" placeholder="Search" id="Search" />
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                     class="h-4 w-4 opacity-70">
                     <path fill-rule="evenodd"
@@ -43,10 +43,11 @@
 
         <div class="">
             <!-- Open the modal using ID.showModal() method -->
-            <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
-                <div class="modal-box">
-                    <h3 class="text-lg font-bold">Hello!</h3>
-                    <p class="py-4">Press ESC key or click the button below to close</p>
+            <dialog id="my_modal_5" class="modal lg:modal-bottom sm:modal-middle items-center">
+                <div class="modal-box w-10/12 mx-auto">
+                    <div id="modal-content" class="space-y-3">
+                     
+                    </div>
                     <div class="modal-action">
                         <form method="dialog">
                             <!-- if there is a button in form, it will close the modal -->
