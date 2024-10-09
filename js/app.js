@@ -6,16 +6,16 @@ const getCategoriesData = () => {
         .catch((error) => console.log(error))
 }
 
-const getVideoData = (searchText = "") => {
+const getVideoData = (searchText = "", sort = false) => {
     fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
         .then(res => res.json())
-        .then(data => videoDisplay(data.videos))
+        .then(data => videoDisplay((data.videos), sort))
         .catch((error) => console.log(error))
 }
 
-const btnColorShift = (id, btnId) =>{
+const btnColorShift = (id, btnId, sort = false) => {
     fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
-    .then(res => res.json())
+        .then(res => res.json())
         .then(data => {
             const selectedBtn = document.getElementById(btnId);
             const allBtn = document.getElementsByClassName('all-btn');
@@ -27,20 +27,20 @@ const btnColorShift = (id, btnId) =>{
             if (data.category.length === 0) {
                 noVideoDisplay();
             }
-            else{
+            else {
                 videoDisplay(data.category);
             }
         })
 }
-const showDetails = (video_id) =>{
+const showDetails = (video_id) => {
     fetch(`https://openapi.programming-hero.com/api/phero-tube/video/${video_id}`)
-    .then(res => res.json())
+        .then(res => res.json())
         .then(data => modalDisplay(data.video))
         .catch((error) => console.log(error))
 }
 
 // show modal
-const modalDisplay = (data) =>{
+const modalDisplay = (data) => {
     const modalContent = document.getElementById('modal-content')
     modalContent.innerHTML = `
      <h2 class="text-xl font-bold">${data.title}</h2>
@@ -48,12 +48,12 @@ const modalDisplay = (data) =>{
        <p>${data.description}</p>
     `
     my_modal_5.showModal();
-}    
+}
 
 
 // empty array action
 
-const noVideoDisplay = () =>{
+const noVideoDisplay = () => {
     const cardContainer = document.getElementById('card-container');
     cardContainer.classList.remove('grid');
     cardContainer.innerHTML = '';
@@ -80,18 +80,33 @@ const displayCategories = (categories) => {
     });
 }
 // video display
-const videoDisplay = (videos) => {
+const videoDisplay = (videos, sort) => {
+    console.log(videos);
+    let sortVideo = videos;
+    if (sort) {
+        sortVideo = [...videos].sort((t1, t2) => {
+            if (t1.title < t2.title) {
+                return -1; // t1 comes before t2
+            }
+            if (t1.title > t2.title) {
+                return 1; // t1 comes after t2
+            }
+            return 0; // They are equal
+        })
+        console.log(sortVideo); // Log sorted videos
+    }
+
     const cardContainer = document.getElementById('card-container');
     cardContainer.classList.add("grid");
     cardContainer.innerHTML = "";
-    videos.forEach(video => {
+    sortVideo.forEach(video => {
+
         const div = document.createElement('div');
         div.classList = "card card-compact rounded-lg";
         div.innerHTML = `<figure class="relative h-[200px]">
                     <img src="${video.thumbnail}" alt="Shoes" / class = "h-full w-full object-cover">
-                    <span class="absolute right-4 bottom-2 bg-black text-white px-2 rounded">${
-                        video.others.posted_date == ''?'' :dateformat(video.others.posted_date)
-                        }</span>
+                    <span class="absolute right-4 bottom-2 bg-black text-white px-2 rounded">${video.others.posted_date == '' ? '' : dateformat(video.others.posted_date)
+            }</span>
                 </figure>
                 <div class="py-3 flex items-center gap-4">
                     <div class="avatar">
@@ -118,10 +133,15 @@ const videoDisplay = (videos) => {
 }
 
 // search
-document.getElementById('Search').addEventListener('keyup', (e) =>{
+document.getElementById('Search').addEventListener('keyup', (e) => {
     getVideoData(e.target.value);
 })
 
+// sorting
+document.getElementById('sort').addEventListener('click', () => {
+    getVideoData('', true)
+
+})
 
 
 // call
